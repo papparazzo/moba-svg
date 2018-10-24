@@ -43,6 +43,11 @@ void collectTrackPoints(Position pos, Direction dir) {
 
     auto currSymbol = layout.get(pos);
 
+    // Eventuell wurde die Verbindung bereits gelöscht
+    if(currSymbol->isJunctionSet(dir)) {
+        return;
+    }
+
     // Verbindugspunkt entfernen (verhindert eine Endlosschleife)
     currSymbol->removeJunktion(dir);
 
@@ -52,8 +57,9 @@ void collectTrackPoints(Position pos, Direction dir) {
         currSymbol = layout.get(pos);
 
         // Verbindugspunkt entfernen (verhindert eine Endlosschleife)
-        currSymbol->removeJunktion(currSymbol->getComplementaryDirection(dir));
+        currSymbol->removeJunktion(getComplementaryDirection(dir));
 
+        // Wie viele Verbindungspunkte hat das Symbol?
         switch(currSymbol->getJunktionsCount()) {
             case 1:
                 posVector.push_back(pos);
@@ -67,16 +73,25 @@ void collectTrackPoints(Position pos, Direction dir) {
                     dir = currSymbol->getNextOpenJunktion();
                 }
                 currSymbol->removeJunktion(dir);
-                continue; // Gerades Gleis -> weitermachen
+                continue; // einfaches Gleis -> weitermachen
 
-            case 3:
+            case 3: {
+                Direction dir1 = currSymbol->getNextOpenJunktion();
+                switch(getDistanceType(dir1, dir)) {
+                    case DistanceType::BEND:
+                    case DistanceType::INVALID:
+                    case DistanceType::STRAIGHT:
+                    break;
+                }
+
+
                 //currSymbol->removeJunktion(dir);
                 //currSymbol->removeJunktion(dir);
                 //collectTrackPoints();
                 //if() {
 
                 //}
-
+            }
             case 4:
                 break;
 
