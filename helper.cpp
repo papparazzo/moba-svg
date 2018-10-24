@@ -43,27 +43,27 @@ Direction getComplementaryDirection(Direction dir) {
 
 DistanceType getDistanceType(Direction dir1, Direction dir2) {
     if(dir1 == dir2) {
-        return DistanceType.INVALID;
+        return DistanceType::INVALID;
     }
 
     Direction dirc = getComplementaryDirection(dir1);
 
     if(dir2 == dirc) {
-        return DistanceType.STRAIGHT;
+        return DistanceType::STRAIGHT;
     }
 
     if(dir2 == (dirc * 2)) {
-        return DistanceType.BEND;
+        return DistanceType::BEND;
     }
 
     // Sonderfall: TOP == 1 -> 1 / 2 = 0 -> müsste hier jedoch 128 sein!!
     if(dirc == TOP && dir2 == TOP_LEFT) {
-        return DistanceType.BEND;
+        return DistanceType::BEND;
     }
 
     if(dir2 == (dirc / 2)) {
-        return DistanceType.BEND;
+        return DistanceType::BEND;
     }
 
-    return DistanceType.INVALID;
+    return DistanceType::INVALID;
 }
