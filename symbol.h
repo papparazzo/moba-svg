@@ -40,13 +40,11 @@ class Symbol {
         operator bool() const;
 
         bool hasOpenJunctionsLeft() const;
-        bool hasComplementaryDirection() const;
         void reset();
 
     protected:
         std::uint8_t s;
         std::uint8_t t;
-        std::uint8_t rotate(std::uint8_t s) const;
         bool check(std::uint8_t i, std::uint8_t b) const;
 
 };

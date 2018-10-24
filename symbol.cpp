@@ -32,20 +32,6 @@ bool Symbol::isStartSymbol() const {
 }
 
 /**
- * rotiert ein Symbol mit "Überschlag" nach links. D.h. das letzte gesetzte Bit
- * rotiert wieder zum Anfang.
- *
- * @param int s symbol
- * @return
- */
-std::uint8_t Symbol::rotate(std::uint8_t s) const {
-    if(s & 0x80) { // if last bit (Most significant bit) is set rotate it to bit 0
-        return (s << 1) | 0x1;
-    }
-    return s << 1;
-}
-
-/**
  * Prüft, ob ein bestimmtes Bit-Muster (z.B. für gerades / gebogenes Gleis)
  * gesetzt ist. Durch rotieren der Bits (@see rotate) kann jede Position durch
  * probiert werden. Simples Beispiel: Bei einem geraden Gleis sind die jeweiligen
@@ -270,7 +256,7 @@ void Symbol::reset() {
 }
 
 bool Symbol::isJunctionSet(Direction d) const {
-    return s & d;
+    return t & d;
 }
 
 void Symbol::removeJunktion(Direction dir) {
@@ -280,17 +266,4 @@ void Symbol::removeJunktion(Direction dir) {
      t |= ~dir;
 }
 
-Direction Symbol::getComplementaryDirection(Direction dir) {
-    std::uint8_t d = dir;
-    d = rotate(d);
-    d = rotate(d);
-    d = rotate(d);
-    return static_cast<Direction>(rotate(d));
-}
-
-/*
-bool S y m b o l::hasComplementaryDirection() {
-
-}
-*/
 

@@ -16,6 +16,18 @@ enum Direction {
     TOP_LEFT     = 128
 };
 
+std::uint8_t rotate(std::uint8_t s);
+
+Direction getComplementaryDirection(Direction dir);
+
+enum DistanceType {
+    INVALID = 0,
+    STRAIGHT = 1,
+    BEND = 2
+};
+
+DistanceType getDistanceType(Direction dir1, Direction dir2);
+
 struct Position {
     Position(size_t x, size_t y) : x{x}, y{y} {
     }
