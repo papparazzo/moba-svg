@@ -44,7 +44,7 @@ void collectTrackPoints(Position pos, Direction dir) {
     auto currSymbol = layout.get(pos);
 
     // Eventuell wurde die Verbindung bereits gelöscht
-    if(currSymbol->isJunctionSet(dir)) {
+    if(!currSymbol->isJunctionSet(dir)) {
         return;
     }
 
@@ -57,16 +57,17 @@ void collectTrackPoints(Position pos, Direction dir) {
         currSymbol = layout.get(pos);
 
         // Verbindugspunkt entfernen (verhindert eine Endlosschleife)
-        currSymbol->removeJunktion(getComplementaryDirection(dir));
+        Direction compDir = getComplementaryDirection(dir);
+        currSymbol->removeJunktion(compDir);
 
-        // Wie viele Verbindungspunkte hat das Symbol?
-        switch(currSymbol->getJunktionsCount()) {
-            case 1:
+        // Wie viele Verbindungspunkte sind noch offen?
+        switch(currSymbol->getOpenJunktionsCount()) {
+            case 0:
                 posVector.push_back(pos);
                 svgLine.push_back(posVector);
                 return; // Endgleis -> Funktion verlassen
 
-            case 2:
+            case 1:
                 if(currSymbol->isBend()) {
                     // bei gebogenen Gleisen die Position speichern
                     posVector.push_back(pos);
@@ -75,24 +76,30 @@ void collectTrackPoints(Position pos, Direction dir) {
                 currSymbol->removeJunktion(dir);
                 continue; // einfaches Gleis -> weitermachen
 
-            case 3: {
+            case 2: {
                 Direction dir1 = currSymbol->getNextOpenJunktion();
-                switch(getDistanceType(dir1, dir)) {
+
+                switch(getDistanceType(dir1, compDir)) {
                     case DistanceType::BEND:
+                        posVector.push_back(pos);
+                        dir = dir1;
+                        currSymbol->removeJunktion(dir);
+                        collectTrackPoints(pos, currSymbol->getNextOpenJunktion());
+                        continue;
+
                     case DistanceType::INVALID:
+                        // Hier fehlt noch was...
+
+                        break;
+
                     case DistanceType::STRAIGHT:
+                        currSymbol->removeJunktion(dir);
+                        collectTrackPoints(pos, currSymbol->getNextOpenJunktion());
+                        continue;
                     break;
                 }
-
-
-                //currSymbol->removeJunktion(dir);
-                //currSymbol->removeJunktion(dir);
-                //collectTrackPoints();
-                //if() {
-
-                //}
             }
-            case 4:
+            case 3:
                 break;
 
             default:
