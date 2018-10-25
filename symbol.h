@@ -37,7 +37,7 @@ class Symbol {
         int getOpenJunktionsCount() const;
 
         Direction getNextJunktion(Direction start = Direction::TOP) const;
-        Direction getNextOpenJunktion() const;
+        Direction getNextOpenJunktion(Direction start = Direction::TOP) const;
 
         Direction getComplementaryDirection(Direction dir);
 

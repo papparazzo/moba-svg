@@ -184,8 +184,8 @@ bool Symbol::hasOpenJunctionsLeft() const {
     return static_cast<bool>(symbolDyn);
 }
 
-Direction Symbol::getNextOpenJunktion() const {
-    return nextJunktion(symbolDyn);
+Direction Symbol::getNextOpenJunktion(Direction start) const {
+    return nextJunktion(symbolDyn, start);
 }
 
 void Symbol::reset() {
@@ -200,7 +200,7 @@ void Symbol::removeJunktion(Direction dir) {
      if(!(symbolDyn & dir)) {
          throw std::out_of_range("junction not set");
      }
-     symbolDyn |= ~dir;
+     symbolDyn &= ~dir;
 }
 
 /**
@@ -237,11 +237,11 @@ int Symbol::countJunktions(std::uint8_t symbol) const {
  */
 Direction Symbol::nextJunktion(std::uint8_t symbol, Direction start) const {
     std::uint8_t b = start;
-    while(b) {
+    for(int i = 0; i < 8; ++i) {
         if(symbol & b) {
             return static_cast<Direction>(b);
         }
-        b <<= 1;
+        b = rotate(b);
     }
     return Direction::UNSET;
 }
