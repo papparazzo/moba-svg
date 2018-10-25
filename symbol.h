@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstdint>
-#include "helper.h"
+#include "direction.h"
 
 class Symbol {
     public:
@@ -14,6 +14,8 @@ class Symbol {
         std::uint8_t getType() const {
             return s;
         }
+
+        std::uint8_t static rotate(std::uint8_t s);
 
         bool isSymbol() const;
         bool isStartSymbol() const;

@@ -1,5 +1,4 @@
 #include "symbol.h"
-#include "helper.h"
 
 #include <exception>
 #include <stdexcept>
@@ -47,7 +46,7 @@ bool Symbol::check(std::uint8_t i, std::uint8_t b) const {
         if(s == b) {
             return true;
         }
-        b = rotate(b);
+        b = Symbol::rotate(b);
     }
     return false;
 }
@@ -265,5 +264,20 @@ void Symbol::removeJunktion(Direction dir) {
      }
      t |= ~dir;
 }
+
+/**
+ * rotiert ein Symbol mit "Überschlag" nach links. D.h. das letzte gesetzte Bit
+ * rotiert wieder zum Anfang.
+ *
+ * @param int s symbol
+ * @return
+ */
+std::uint8_t Symbol::rotate(std::uint8_t s) {
+    if(s & 0x80) { // if last bit (Most significant bit) is set rotate it to bit 0
+        return (s << 1) | 0x1;
+    }
+    return s << 1;
+}
+
 
 
