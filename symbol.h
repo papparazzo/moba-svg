@@ -5,14 +5,14 @@
 
 class Symbol {
     public:
-        Symbol(std::uint8_t s) : s{s}, t{s} {
+        Symbol(std::uint8_t symbol) : symbolFix{symbol}, symbolDyn{symbol} {
         }
 
         virtual ~Symbol() {
         }
 
         std::uint8_t getType() const {
-            return s;
+            return symbolFix;
         }
 
         std::uint8_t static rotate(std::uint8_t s);
@@ -32,10 +32,14 @@ class Symbol {
         bool isSwitch() const;
         bool isValidSymbol() const;
         bool isJunctionSet(Direction d) const;
+
         int getJunktionsCount() const;
-        Direction getComplementaryDirection(Direction dir);
+        int getOpenJunktionsCount() const;
+
         Direction getNextJunktion(Direction start = Direction::TOP) const;
         Direction getNextOpenJunktion() const;
+
+        Direction getComplementaryDirection(Direction dir);
 
         void removeJunktion(Direction curDir);
 
@@ -45,10 +49,12 @@ class Symbol {
         void reset();
 
     protected:
-        std::uint8_t s;
-        std::uint8_t t;
+        std::uint8_t symbolFix; // Symbol mit festen Verbindungen
+        std::uint8_t symbolDyn; // Symbol mit dynamischen Verbindungen
         bool check(std::uint8_t i, std::uint8_t b) const;
 
+        int countJunktions(std::uint8_t symbol) const;
+        Direction nextJunktion(std::uint8_t symbol, Direction start = Direction::TOP) const;
 };
 
 

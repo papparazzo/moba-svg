@@ -8,23 +8,23 @@ Symbol::operator bool() const {
 }
 
 bool Symbol::isSymbol() const {
-    if(s != 0) {
+    if(symbolFix != 0) {
         return true;
     }
     return false;
 }
 
 bool Symbol::isStartSymbol() const {
-    if(s & Direction::LEFT) {
+    if(symbolFix & Direction::LEFT) {
         return false;
     }
-    if(s & Direction::TOP_LEFT) {
+    if(symbolFix & Direction::TOP_LEFT) {
         return false;
     }
-    if(s & Direction::TOP) {
+    if(symbolFix & Direction::TOP) {
         return false;
     }
-    if(s & Direction::TOP_RIGHT) {
+    if(symbolFix & Direction::TOP_RIGHT) {
         return false;
     }
     return true;
@@ -43,7 +43,7 @@ bool Symbol::isStartSymbol() const {
  */
 bool Symbol::check(std::uint8_t i, std::uint8_t b) const {
     while(i--) {
-        if(s == b) {
+        if(symbolFix == b) {
             return true;
         }
         b = Symbol::rotate(b);
@@ -53,8 +53,6 @@ bool Symbol::check(std::uint8_t i, std::uint8_t b) const {
 
 /**
  * Prüft, ob das Symbol ein Endsymbol (Prellbock) ist
- *
- * @return bool
  */
 bool Symbol::isEnd() const {
     return check(8, Direction::TOP);
@@ -62,8 +60,6 @@ bool Symbol::isEnd() const {
 
 /**
  * Prüft, ob das Symbol ein gerades Gleis ist
- *
- * @return
  */
 bool Symbol::isStraight() const {
     return check(4, Direction::TOP | Direction::BOTTOM);
@@ -71,7 +67,6 @@ bool Symbol::isStraight() const {
 
 /**
  * Prüft, ob das Symobl eine einfache Kreuzung ist
- * @return
  */
 bool Symbol::isCrossOver() const {
     return check(2, Direction::TOP | Direction::BOTTOM | Direction::RIGHT | Direction::LEFT);
@@ -79,8 +74,6 @@ bool Symbol::isCrossOver() const {
 
 /**
  * Prüft, ob das Symbol gebogen ist
- *
- * @return
  */
 bool Symbol::isBend() const {
     return check(8, Direction::RIGHT | Direction::BOTTOM_LEFT);
@@ -88,8 +81,6 @@ bool Symbol::isBend() const {
 
 /**
  * Prüft, ob das Symbol ein einfaches Gleis ist (keine Weiche...)
- *
- * @return
  */
 bool Symbol::isTrack() const {
     if(isStraight()) {
@@ -109,8 +100,6 @@ bool Symbol::isTrack() const {
 
 /**
  * Prüft, ob das Symob eine Doppelte Kreuzungsweiche ist
- *
- * @return
  */
 bool Symbol::isCrossOverSwitch() const {
     return check(4, Direction::RIGHT | Direction::LEFT | Direction::TOP_RIGHT | Direction::BOTTOM_LEFT);
@@ -118,8 +107,6 @@ bool Symbol::isCrossOverSwitch() const {
 
 /**
  * Prüft, ob Symbol eine Linksweiche ist
- *
- * @return
  */
 bool Symbol::isLeftSwitch() const {
     return check(8, Direction::RIGHT | Direction::LEFT | Direction::TOP_RIGHT);
@@ -127,8 +114,6 @@ bool Symbol::isLeftSwitch() const {
 
 /**
  * Prüft, ob Symbol eine Rechtsweiche ist
- *
- * @return
  */
 bool Symbol::isRightSwitch() const {
     return check(8, Direction::RIGHT | Direction::LEFT | Direction::BOTTOM_RIGHT);
@@ -136,8 +121,6 @@ bool Symbol::isRightSwitch() const {
 
 /**
  * Prüft, ob Symbol eine Weiche ist
- *
- * @return
  */
 bool Symbol::isJunktionSwitch() const {
     if(isRightSwitch()) {
@@ -151,8 +134,6 @@ bool Symbol::isJunktionSwitch() const {
 
 /**
  * Prüft, ob Symbol eine Dreiwegweiche ist
- *
- * @return
  */
 bool Symbol::isThreeWaySwitch() const {
     return check(8, Direction::TOP | Direction::BOTTOM | Direction::TOP_RIGHT | Direction::TOP_LEFT);
@@ -160,8 +141,6 @@ bool Symbol::isThreeWaySwitch() const {
 
 /**
  * Prüft, ob Symbol kein einfaches Gleis ist
- *
- * @return
  */
 bool Symbol::isSwitch() const {
     if(isCrossOverSwitch()) {
@@ -178,8 +157,6 @@ bool Symbol::isSwitch() const {
 
 /**
  * Prüft, ob Symbol ein gültiges Symbol ist
- *
- * @return
  */
 bool Symbol::isValidSymbol() const {
     if(isTrack()) {
@@ -191,93 +168,80 @@ bool Symbol::isValidSymbol() const {
     return false;
 }
 
-/**
- * Gibt die Anzahl der Verbindungspunkte zurück
- *
- * @return
- */
 int Symbol::getJunktionsCount() const {
-    int c = 0;
-    std::uint8_t b = Direction::TOP;
-    for(int i = 0; i < 8; ++i) {
-        if(s & b) {
-            ++c;
-        }
-        b = rotate(b);
-    }
-    return c;
+    return countJunktions(symbolFix);
 }
 
-/**
- * Gibt den nächsten Verbindungspunkt des Symobls zurück
- *
- * @param start
- * @return
- */
+int Symbol::getOpenJunktionsCount() const {
+    return countJunktions(symbolDyn);
+}
+
 Direction Symbol::getNextJunktion(Direction start) const {
-    std::uint8_t b = start;
-    while(b) {
-        if(s & b) {
-            return static_cast<Direction>(b);
-        }
-        b <<= 1;
-    }
-    return Direction::UNSET;
+    return nextJunktion(symbolFix, start);
 }
 
-/**
- * Gibt zurück, ob noch offene Verbindungen existieren
- *
- * @return
- */
 bool Symbol::hasOpenJunctionsLeft() const {
-    return static_cast<bool>(t);
+    return static_cast<bool>(symbolDyn);
 }
 
-/**
- * Gibt die nächste offene Verbindung zurück
- *
- * @return
- */
 Direction Symbol::getNextOpenJunktion() const {
-    std::uint8_t b = 1;
-    while(b) {
-        if(t & b) {
-            return static_cast<Direction>(b);
-        }
-        b <<= 1;
-    }
-    return Direction::UNSET;
+    return nextJunktion(symbolDyn);
 }
 
 void Symbol::reset() {
-    t = s;
+    symbolDyn = symbolFix;
 }
 
-bool Symbol::isJunctionSet(Direction d) const {
-    return t & d;
+bool Symbol::isJunctionSet(Direction dir) const {
+    return symbolDyn & dir;
 }
 
 void Symbol::removeJunktion(Direction dir) {
-     if(!(t & dir)) {
+     if(!(symbolDyn & dir)) {
          throw std::out_of_range("junction not set");
      }
-     t |= ~dir;
+     symbolDyn |= ~dir;
 }
 
 /**
  * rotiert ein Symbol mit "Überschlag" nach links. D.h. das letzte gesetzte Bit
  * rotiert wieder zum Anfang.
  *
- * @param int s symbol
+ * @param int symbol
  * @return
  */
-std::uint8_t Symbol::rotate(std::uint8_t s) {
-    if(s & 0x80) { // if last bit (Most significant bit) is set rotate it to bit 0
-        return (s << 1) | 0x1;
+std::uint8_t Symbol::rotate(std::uint8_t symbol) {
+    if(symbol & 0x80) { // if last bit (Most significant bit) is set rotate it to bit 0
+        return (symbol << 1) | 0x1;
     }
-    return s << 1;
+    return symbol << 1;
 }
 
+/**
+ * Gibt die Anzahl der Verbindungspunkte zurück
+ */
+int Symbol::countJunktions(std::uint8_t symbol) const {
+    int counter = 0;
+    std::uint8_t b = Direction::TOP;
+    for(int i = 0; i < 8; ++i) {
+        if(symbol & b) {
+            ++counter;
+        }
+        b = rotate(b);
+    }
+    return counter;
+}
 
-
+/**
+ * Gibt die nächste offene Verbindung zurück
+ */
+Direction Symbol::nextJunktion(std::uint8_t symbol, Direction start) const {
+    std::uint8_t b = start;
+    while(b) {
+        if(symbol & b) {
+            return static_cast<Direction>(b);
+        }
+        b <<= 1;
+    }
+    return Direction::UNSET;
+}
