@@ -27,6 +27,48 @@ Position getRealStartPosition() {
     return pos;
 }
 
+bool handleThreeConnector(Symbol &currSymbol, Direction compDir) {
+    /*
+    Direction dir1 = currSymbol->getNextOpenJunktion();
+
+    switch(getDistanceType(dir1, compDir)) {
+        case DistanceType::BEND:
+            //posVector.push_back(pos);
+            dir = dir1;
+            currSymbol->removeJunktion(dir);
+            collectTrackPoints(pos, currSymbol->getNextOpenJunktion());
+            continue;
+
+        case DistanceType::INVALID:
+            // Hier fehlt noch was...
+
+            break;
+
+        case DistanceType::STRAIGHT:
+            currSymbol->removeJunktion(dir);
+            collectTrackPoints(pos, currSymbol->getNextOpenJunktion());
+            continue;
+        break;
+    }
+     */
+}
+
+bool handleFourConnector(Position pos, Direction dir, const Symbol &currSymbol) {
+    if(currSymbol->isCrossOver() || currSymbol->isCrossOverSwitch()) {
+        currSymbol->removeJunktion(dir);
+
+        dir = currSymbol->getNextOpenJunktion();
+        while(1) {
+            pos.setNewPosition(dir);
+            
+             //auto currSymbol = layout.get(pos);
+        }
+
+
+        return false;
+    }
+}
+
 /**
  * parst den Gleisplan bis zu einem Endgleis oder einer Weiche. Alle Positionen
  * von gebogenen Gleisen weden in einem Vektor gespeichert. Bei einem Endgleis wird
@@ -76,30 +118,16 @@ void collectTrackPoints(Position pos, Direction dir) {
                 currSymbol->removeJunktion(dir);
                 continue; // einfaches Gleis -> weitermachen
 
-            case 2: {
-                Direction dir1 = currSymbol->getNextOpenJunktion();
-
-                switch(getDistanceType(dir1, compDir)) {
-                    case DistanceType::BEND:
-                        posVector.push_back(pos);
-                        dir = dir1;
-                        currSymbol->removeJunktion(dir);
-                        collectTrackPoints(pos, currSymbol->getNextOpenJunktion());
-                        continue;
-
-                    case DistanceType::INVALID:
-                        // Hier fehlt noch was...
-
-                        break;
-
-                    case DistanceType::STRAIGHT:
-                        currSymbol->removeJunktion(dir);
-                        collectTrackPoints(pos, currSymbol->getNextOpenJunktion());
-                        continue;
-                    break;
+            case 2:
+                if(handleThreeConnector()) {
+                    posVector.push_back(pos);
                 }
-            }
+                break;
+
             case 3:
+                if(handleFourConnector(pos, dir, currSymbol)) {
+                    posVector.push_back(pos);
+                }
                 break;
 
             default:
