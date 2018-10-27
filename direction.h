@@ -33,13 +33,27 @@ enum Direction {
     TOP_LEFT     = 128
 };
 
+inline Direction getNextLeftDirection(Direction dir) {
+    if(dir == TOP) {
+        return TOP_LEFT;
+    }
+    return static_cast<Direction>(dir / 2);
+}
+
+inline Direction getNextRightDirection(Direction dir) {
+    if(dir == TOP_LEFT) {
+        return TOP;
+    }
+    return static_cast<Direction>(dir * 2);
+}
+
 /**
  * Gibt die Entgegengesetzt Richtung zurück. Beispiel: TOP liefert BOTTOM
  *
  * @param dir
  * @return
  */
-inline Direction getComplementaryDirection(const Direction &dir) {
+inline Direction getComplementaryDirection(Direction dir) {
     if(dir == Direction::UNSET) {
         return Direction::UNSET;
     }
