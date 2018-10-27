@@ -31,7 +31,9 @@ class Symbol {
         bool isThreeWaySwitch() const;
         bool isSwitch() const;
         bool isValidSymbol() const;
+
         bool isJunctionSet(Direction d) const;
+        bool isOpenJunctionSet(Direction dir) const;
 
         int getJunktionsCount() const;
         int getOpenJunktionsCount() const;

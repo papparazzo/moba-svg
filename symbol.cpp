@@ -196,6 +196,10 @@ bool Symbol::isJunctionSet(Direction dir) const {
     return symbolDyn & dir;
 }
 
+bool Symbol::isOpenJunctionSet(Direction dir) const {
+    return symbolFix & dir;
+}
+
 void Symbol::removeJunktion(Direction dir) {
      if(!(symbolDyn & dir)) {
          throw std::out_of_range("junction not set");
