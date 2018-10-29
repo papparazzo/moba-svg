@@ -22,6 +22,10 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
         pos.setNewPosition(dir);
         auto currSymbol = layout->get(pos);
 
+        //if(currSymbol == null) {
+        //
+        //}
+
         // Verbindugspunkt entfernen (verhindert eine Endlosschleife)
         Direction compDir = getComplementaryDirection(dir);
         currSymbol->removeJunktion(compDir);
@@ -93,10 +97,16 @@ Position LayoutParser::getRealStartPosition() {
 }
 
 void LayoutParser::printTrackPoints() {
-    for(auto iter = lines.begin(); iter != lines.end(); ++iter) {
-        for(auto iter2 = iter->begin(); iter2 != iter->end(); ++iter2) {
-            std::cout << *iter2 << std::endl;
+    for(auto &iter : lines) {
+        for(auto &iter2 : iter) {
+            std::cout << iter2 << std::endl;
         }
+    }
+
+    std::cout << "-------------------------------------------------------" << std::endl;
+
+    for (auto &iter : pointsOfInterest) {
+        std::cout << iter << std::endl;
     }
 }
 
@@ -108,12 +118,26 @@ void LayoutParser::parse() {
     // nächste Richtung bestimmen. Das Startsymbol kann nur ein Endpunkt oder ein
     // gerades Gleis sein. Beim geraden Gleis in beide Richtungen parsen
     Direction dir = currSymbol->getNextJunktion(Direction::TOP);
+    currSymbol->removeJunktion(dir);
     collectTrackPoints(pos, dir);
     if(!currSymbol->isEnd()) {
         pointsOfInterest.push_back(pos);
     }
+    return;
+    auto iter = pointsOfInterest.begin();
 
-    
+    while (iter != pointsOfInterest.end()) {
+        currSymbol = layout->get(*iter);
+        Direction dir = currSymbol->getNextJunktion(Direction::TOP);
+        collectTrackPoints(*iter, dir);
+        if(!currSymbol->isEnd()) {
+            pointsOfInterest.push_back(pos);
+        }
+
+        std::cout << " -- " << *iter << ".." << std::endl;
+        iter = pointsOfInterest.erase(iter);
+    }
+
 
 
     //dir = currSymbol->getNextJunktion(dir);
