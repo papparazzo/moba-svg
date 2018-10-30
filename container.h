@@ -74,6 +74,9 @@ class Container {
 
         T get(const Position &pos) const {
             this->checkPosition(pos);
+            if(items[pos.x][pos.y] == nullptr) {
+                throw ContainerException{"no valid item"};
+            }
             return items[pos.x][pos.y];
         }
 
@@ -85,7 +88,7 @@ class Container {
             size_t cnt = 0;
             for(size_t y = 0; y < height; ++y) {
                 for(size_t x = 0; x < width; ++x) {
-                    if((bool)this->items[x][y]) {
+                    if(static_cast<bool>(this->items[x][y])) {
                         cnt++;;
                     }
                 }
@@ -102,7 +105,7 @@ class Container {
                     return {x, y};
                 }
             }
-            throw ContainerException("No position found!");
+            throw ContainerException{"No position found!"};
         }
 
         Position getNextBoundPosition(const Position &pos) {
@@ -114,13 +117,13 @@ class Container {
                     return {x, y};
                 }
             }
-            throw ContainerException("No position found!");
+            throw ContainerException{"No position found!"};
         }
 
     protected:
         void checkPosition(const Position &pos) const {
             if(pos.x >= width || pos.y >= height) {
-                throw ContainerException("Dimensions out of range!");
+                throw ContainerException{"Dimensions out of range!"};
             }
         }
 
