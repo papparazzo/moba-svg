@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include <string>
+
 enum Direction {
     UNSET        = 0,
     TOP          = 1,
@@ -32,6 +34,37 @@ enum Direction {
     LEFT         = 64,
     TOP_LEFT     = 128
 };
+
+inline std::string getDirectionAsString(Direction dir) {
+    switch(dir) {
+        case UNSET:
+            return "UNSET";
+
+        case TOP:
+            return "TOP";
+
+        case TOP_RIGHT:
+            return "TOP_RIGHT";
+
+        case RIGHT:
+            return "RIGHT";
+
+        case BOTTOM_RIGHT:
+            return "BOTTOM_RIGHT";
+
+        case  BOTTOM:
+            return "BOTTOM";
+
+        case  BOTTOM_LEFT:
+            return "BOTTOM_LEFT";
+
+        case  LEFT:
+            return "LEFT";
+
+        case  TOP_LEFT:
+            return "TOP_LEFT";
+    }
+}
 
 inline Direction getNextLeftDirection(Direction dir) {
     if(dir == TOP) {
