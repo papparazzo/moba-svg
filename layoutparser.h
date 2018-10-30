@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include <list>
 #include <memory>
 #include <exception>
 
@@ -40,7 +41,7 @@ class LayoutParser {
     /**
      * Enthält sämtliche Weichen und Kreuzungen
      */
-    std::vector<Position> pointsOfInterest;
+    std::list<Position> pointsOfInterest;
 
     void collectTrackPoints(Position pos, Direction dir);
 
