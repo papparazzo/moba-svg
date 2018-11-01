@@ -1,11 +1,40 @@
+/*
+ *  Project:    moba-svg
+ *
+ *  Copyright (C) 2016 Stefan Paproth <pappi-@gmx.de>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/agpl.txt>.
+ *
+ */
+
 #include <memory>
 
 #include "container.h"
 #include "symbol.h"
 #include "layoutparser.h"
+#include "common.h"
 
 #include <iostream>
 
+void printTrackPoints(LineVector &lines) {
+    for(auto &iter : lines) {
+        for(auto &iter2 : iter) {
+            std::cout << iter2 << " - ";
+        }
+        std::cout << std::endl;
+    }
+}
 
 int main(int argc, char** argv) {
     std::shared_ptr<Container<std::shared_ptr<Symbol>>> layout{new Container<std::shared_ptr<Symbol>>{20, 20}} ;
@@ -17,7 +46,7 @@ int main(int argc, char** argv) {
 
     layout->addItem({12, 9}, std::shared_ptr<Symbol>{new Symbol(Direction::BOTTOM)});
     layout->addItem({12, 11}, std::shared_ptr<Symbol>{new Symbol(Direction::TOP)});
-    LayoutParser parser{layout};
-    parser.parse();
-    parser.printTrackPoints();
+    LayoutParser parser;
+    LineVector lines = parser.parse(layout);
+    printTrackPoints(lines);
 }

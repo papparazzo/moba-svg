@@ -1,7 +1,27 @@
-
-#include "layoutparser.h"
+/*
+ *  Project:    moba-svg
+ *
+ *  Copyright (C) 2016 Stefan Paproth <pappi-@gmx.de>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/agpl.txt>.
+ *
+ */
 
 #include <iostream>
+
+#include "layoutparser.h"
+#include "common.h"
 
 /**
  * parst den Gleisplan bis zu einem Endgleis. Alle Positionen
@@ -40,7 +60,7 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
                    // Teil einer Weiche (kann z.B. bei einer Kehrschleife passieren)
                    case DistanceType::INVALID:
                         posVector.push_back(pos);
-                        lines.push_back(posVector);
+                        lines.push_back(std::move(posVector));
                         currSymbol->removeJunktion(openDir);
                         collectTrackPoints(pos, openDir);
                         return;
@@ -85,8 +105,12 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
     }
 }
 
-// Ermittelt einen definierten Startpunkt. Beginnt oben links und gibt Position
-// des ersten Symbols zurück, welches entweder Weiche oder ein Endstück ist.
+/**
+ * Ermittelt einen definierten Startpunkt. Beginnt oben links und gibt Position
+ * des ersten Symbols zurück, welches entweder Weiche oder ein Endstück ist.
+ *
+ * @return
+ */
 Position LayoutParser::getRealStartPosition() {
     Position pos = layout->getNextBoundPosition({0, 0});
 
@@ -102,8 +126,14 @@ Position LayoutParser::getRealStartPosition() {
 /**
  * Parst einen gesamten Gleisplan und liefert die Punkte von Weichen und gebogenen
  * Gleisen zurück.
+ *
+ * @param layout zwei-dimensionales Array mit dem Gleisplan
+ * @return LineVector Enthält sämtliche Punkte mit Richtungsänderung für die SVG-Datei
  */
-void LayoutParser::parse() {
+LineVector LayoutParser::parse(LayoutContainer layout) {
+
+    this->layout = layout;
+    this->lines = LineVector();
 
     // Startpunkt ermitteln
     pointsOfInterest.push_back(getRealStartPosition());
@@ -129,13 +159,16 @@ void LayoutParser::parse() {
         }
         pointsOfInterest.pop_front();
     }
+    return std::move(this->lines);
 }
+
 /**
  * Hangelt sich am Gleisplan entlang bis kein gerades Gleis mehr gefunden wurde,
  * Bzw. bis es kein Symbol mehr gibt, welches in die Richtung "dir" weiterführt
- * @param pos
- * @param dir
- * @return
+ *
+ * @param pos Startposition
+ * @param dir Richtung in der gesucht werden soll
+ * @return Position des Symbols welches kein gerades Gleis mehr darstellt
  */
 Position LayoutParser::getNextBendPosition(Position pos, Direction dir) {
     std::shared_ptr<Symbol> currSymbol;
@@ -147,17 +180,3 @@ Position LayoutParser::getNextBendPosition(Position pos, Direction dir) {
     return pos;
 }
 
-void LayoutParser::printTrackPoints() {
-    for(auto &iter : lines) {
-        for(auto &iter2 : iter) {
-            std::cout << iter2 << " - ";
-        }
-        std::cout << std::endl;
-    }
-
-    std::cout << "-------------------------------------------------------" << std::endl;
-
-    for (auto &iter : pointsOfInterest) {
-        std::cout << iter << std::endl;
-    }
-}

@@ -1,15 +1,34 @@
+/*
+ *  Project:    moba-svg
+ *
+ *  Copyright (C) 2016 Stefan Paproth <pappi-@gmx.de>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Affero General Public License as
+ *  published by the Free Software Foundation, either version 3 of the
+ *  License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU Affero General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Affero General Public License
+ *  along with this program. If not, see <http://www.gnu.org/licenses/agpl.txt>.
+ *
+ */
 
 #pragma once
 
 #include <vector>
 #include <list>
-#include <memory>
 #include <exception>
 
 #include "position.h"
 #include "container.h"
 #include "symbol.h"
 #include "direction.h"
+#include "common.h"
 
 class LayoutParserException : public std::exception {
     public:
@@ -32,9 +51,7 @@ class LayoutParserException : public std::exception {
 
 class LayoutParser {
 
-    typedef std::shared_ptr<Container<std::shared_ptr<Symbol> > > LayoutContainer;
-
-    std::vector<std::vector<Position> > lines;
+    LineVector lines;
 
     LayoutContainer layout;
 
@@ -49,12 +66,14 @@ class LayoutParser {
     Position getRealStartPosition();
 
 public:
-    LayoutParser(LayoutContainer layout) : layout{layout} {}
+    LayoutParser() {
+
+    }
     virtual ~LayoutParser() {
+
     }
 
-    void printTrackPoints();
-    void parse();
+    LineVector parse(LayoutContainer layout);
 };
 
 
