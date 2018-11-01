@@ -39,12 +39,13 @@ class LayoutParser {
     LayoutContainer layout;
 
     /**
-     * Enthält sämtliche Weichen und Kreuzungen
+     * Enthält sämtliche Weichen und Kreuzungen. Also Startpunkte von denen man aus
+     * den Gleisplan parsen kann.
      */
     std::list<Position> pointsOfInterest;
 
     void collectTrackPoints(Position pos, Direction dir);
-
+    Position getNextBendPosition(Position pos, Direction dir);
     Position getRealStartPosition();
 
 public:

@@ -56,7 +56,11 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
 
             case 2:
             case 3: {
-                pointsOfInterest.push_back(pos);
+                if(currSymbol->isCrossOver() || currSymbol->isCrossOverSwitch()) {
+                    pointsOfInterest.push_back(getNextBendPosition(pos, currSymbol->getNextOpenJunktion()));
+                } else {
+                    pointsOfInterest.push_back(pos);
+                }
                 if(currSymbol->isOpenJunctionSet(dir)) {
                     currSymbol->removeJunktion(dir);
                     continue; // einfaches Gleis -> weitermachen
@@ -95,19 +99,29 @@ Position LayoutParser::getRealStartPosition() {
     return pos;
 }
 
+/**
+ * Parst einen gesamten Gleisplan und liefert die Punkte von Weichen und gebogenen
+ * Gleisen zurück.
+ */
 void LayoutParser::parse() {
 
+    // Startpunkt ermitteln
     pointsOfInterest.push_back(getRealStartPosition());
 
+    // So lange parsen, bis die Liste mit Startpunkten leer ist.
     while(!pointsOfInterest.empty()) {
+        // Das erste Symbol der Liste holen und die Startrichtung ermitteln
         auto pos = pointsOfInterest.front();
         auto currSymbol = layout->get(pos);
 
-        if(!currSymbol->hasOpenJunctionsLeft()) {
+        Direction dir = currSymbol->getNextOpenJunktion(Direction::TOP);
+
+        // Falls das Symobl keine offenen Verbindungspunkte mehr aufweist dann
+        // das Element aus der Liste entfernen und mit dem nächsten Symbol fortfahren
+        if(dir == UNSET) {
             pointsOfInterest.pop_front();
             continue;
         }
-        Direction dir = currSymbol->getNextOpenJunktion(Direction::TOP);
         currSymbol->removeJunktion(dir);
         collectTrackPoints(pos, dir);
         if(currSymbol->hasOpenJunctionsLeft()) {
@@ -115,6 +129,22 @@ void LayoutParser::parse() {
         }
         pointsOfInterest.pop_front();
     }
+}
+/**
+ * Hangelt sich am Gleisplan entlang bis kein gerades Gleis mehr gefunden wurde,
+ * Bzw. bis es kein Symbol mehr gibt, welches in die Richtung "dir" weiterführt
+ * @param pos
+ * @param dir
+ * @return
+ */
+Position LayoutParser::getNextBendPosition(Position pos, Direction dir) {
+    std::shared_ptr<Symbol> currSymbol;
+    do {
+        // Nächstes Symobl der aus Richtung "dir" ermitteln
+        pos.setNewPosition(dir);
+        currSymbol = layout->get(pos);
+    } while(currSymbol->isOpenJunctionSet(dir));
+    return pos;
 }
 
 void LayoutParser::printTrackPoints() {
