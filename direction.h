@@ -1,5 +1,5 @@
 /*
- *  Project:    moba-sniffer
+ *  Project:    moba-svg
  *
  *  Copyright (C) 2016 Stefan Paproth <pappi-@gmx.de>
  *
