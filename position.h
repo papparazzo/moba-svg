@@ -26,6 +26,9 @@
 #include "direction.h"
 
 struct Position {
+    Position() : x{0}, y{0} {
+    }
+
     Position(size_t x, size_t y) : x{x}, y{y} {
     }
     size_t x;
