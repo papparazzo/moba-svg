@@ -39,6 +39,13 @@ struct Position {
         return os;
     }
 
+    friend bool operator==(const Position& lhs, const Position& rhs) {
+        return lhs.x == rhs.x && lhs.y == rhs.y;
+    }
+    friend bool operator!=(const Position& lhs, const Position& rhs) {
+        return !(lhs == rhs);
+    }
+
     /**
      * setzt den Cursor (Position) in die Richtung welche mit Direction
      * angegeben ist. Beispiel: Direction RIGHT -> x einen weiter nach rechts
