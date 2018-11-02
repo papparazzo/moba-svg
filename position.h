@@ -46,6 +46,10 @@ struct Position {
         return !(lhs == rhs);
     }
 
+    Position getDistance(Position pos) {
+        return Position(pos.x - x, pos.y - y);
+    }
+
     /**
      * setzt den Cursor (Position) in die Richtung welche mit Direction
      * angegeben ist. Beispiel: Direction RIGHT -> x einen weiter nach rechts
