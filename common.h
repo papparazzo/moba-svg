@@ -21,6 +21,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "symbol.h"
 #include "container.h"
