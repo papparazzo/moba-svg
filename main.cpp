@@ -24,17 +24,9 @@
 #include "symbol.h"
 #include "layoutparser.h"
 #include "common.h"
+#include "svgdocument.h"
 
 #include <iostream>
-
-void printTrackPoints(LineVector &lines) {
-    for(auto &iter : lines) {
-        for(auto &iter2 : iter) {
-            std::cout << iter2 << " - ";
-        }
-        std::cout << std::endl;
-    }
-}
 
 int main(int argc, char** argv) {
     std::shared_ptr<Container<std::shared_ptr<Symbol>>> layout{new Container<std::shared_ptr<Symbol>>{20, 20}} ;
@@ -48,5 +40,8 @@ int main(int argc, char** argv) {
     layout->addItem({12, 11}, std::shared_ptr<Symbol>{new Symbol(Direction::TOP)});
     LayoutParser parser;
     LineVector lines = parser.parse(layout);
-    printTrackPoints(lines);
+    SvgDocument svg;
+    svg.create("/home/stefan/Desktop/test.svg", lines, layout->getHeight(), layout->getWidth());
+
+    return 0;
 }
