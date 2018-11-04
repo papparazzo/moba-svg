@@ -22,6 +22,29 @@
 
 #include <sstream>
 
+/**
+     <?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.2" xml:lang="en">
+
+              <desc>Gleise</desc>
+
+              <path d="m30,30 h90 l100,100 v100" fill="white" stroke="rgb(100,100,100)" stroke-width="10" />
+
+              <polygon id="tri" points="20,35 31,35 31,25 30,25" fill="rgb(100,100,100)"/>
+
+
+
+  <!--
+
+  <path d="m80,0 h40 v80 h180 v40h-180 v80 h-40 v-80 h-80 v-40 h80z" style="stroke-width:1" />
+
+              <line x1="100" y1="100" x2="400" y2="100" style="stroke:rgb(100,100,100);stroke-width:9" />
+              <line x1="100" y1="100" x2="400" y2="100" stroke-dasharray="100,10" style="stroke:red;stroke-width:5" />
+        -->
+</svg>
+ */
+
 void SvgDocument::create(const std::string &fileName, LineVector &lines, size_t height, size_t width) {
     out.open(fileName);
     createDocument("auto-generated", lines, height, width);
