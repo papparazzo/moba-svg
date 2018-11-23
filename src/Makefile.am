@@ -4,8 +4,7 @@ bin_PROGRAMS = \
 moba_svg_SOURCES = \
     main.cpp \
     layoutparser.cpp \
-    svgdocument.cpp \
-    symbol.cpp
+    svgdocument.cpp 
 
 
 moba_svg_LDADD = -lMoBaCommon $(GTKMM_LIBS)
