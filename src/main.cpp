@@ -21,7 +21,7 @@
 #include <memory>
 
 #include "container.h"
-#include "symbol.h"
+#include <modules/lib-tracklayout/src/symbol.h>
 #include "layoutparser.h"
 #include "common.h"
 #include "svgdocument.h"

@@ -24,10 +24,11 @@
 #include <list>
 #include <exception>
 
-#include "position.h"
+
+#include <modules/lib-tracklayout/src/position.h>
 #include "container.h"
-#include "symbol.h"
-#include "direction.h"
+#include <modules/lib-tracklayout/src/symbol.h>
+#include <modules/lib-tracklayout/src/direction.h>
 #include "common.h"
 
 class LayoutParserException : public std::exception {

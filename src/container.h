@@ -23,7 +23,7 @@
 #include <exception>
 #include <string>
 
-#include "position.h"
+#include <modules/lib-tracklayout/src/position.h>
 
 class ContainerException : public std::exception {
     public:

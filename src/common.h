@@ -23,9 +23,9 @@
 #include <memory>
 #include <vector>
 
-#include "symbol.h"
+#include <modules/lib-tracklayout/src/symbol.h>
 #include "container.h"
-#include "position.h"
+#include <modules/lib-tracklayout/src/position.h>
 
 typedef std::shared_ptr<Container<std::shared_ptr<Symbol>>> LayoutContainer;
 
