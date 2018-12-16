@@ -27,8 +27,8 @@
 #include "container.h"
 #include <modules/lib-tracklayout/src/position.h>
 
-typedef std::shared_ptr<Container<std::shared_ptr<Symbol>>> LayoutContainer;
+using LayoutContainer = std::shared_ptr<Container<std::shared_ptr<Symbol>>>;
 
-typedef std::vector<std::vector<Position>> LineVector;
+using LineVector = std::vector<std::vector<Position>>;
 
 
