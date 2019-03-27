@@ -23,9 +23,9 @@
 #include <memory>
 #include <vector>
 
-#include <modules/lib-tracklayout/src/symbol.h>
+#include "moba/symbol.h"
 #include "container.h"
-#include <modules/lib-tracklayout/src/position.h>
+#include "moba/position.h"
 
 using LayoutContainer = std::shared_ptr<Container<std::shared_ptr<Symbol>>>;
 

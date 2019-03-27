@@ -1,2 +1,2 @@
-SUBDIRS = modules/lib-tracklayout/src src
+SUBDIRS = modules/lib-tracklayout/src/moba src
 CLEANFILES = *~

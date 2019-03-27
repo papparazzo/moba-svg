@@ -23,7 +23,7 @@
 #include <exception>
 #include <string>
 
-#include <modules/lib-tracklayout/src/position.h>
+#include "moba/position.h"
 
 class ContainerException : public std::exception {
     public:
@@ -147,8 +147,8 @@ class Container {
             }
         }
 
-        size_t height;
         size_t width;
+        size_t height;
         Position position = {0, 0};
 
         T **items;

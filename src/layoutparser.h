@@ -25,10 +25,10 @@
 #include <exception>
 
 
-#include <modules/lib-tracklayout/src/position.h>
+#include "moba/position.h"
 #include "container.h"
-#include <modules/lib-tracklayout/src/symbol.h>
-#include <modules/lib-tracklayout/src/direction.h>
+#include "moba/symbol.h"
+#include "moba/direction.h"
 #include "common.h"
 
 class LayoutParserException : public std::exception {

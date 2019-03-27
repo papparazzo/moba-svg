@@ -7,9 +7,9 @@ moba_svg_SOURCES = \
     svgdocument.cpp
 
 
-moba_svg_LDADD = -lMoBaCommon $(GTKMM_LIBS) ../modules/lib-tracklayout/src/libtracklayout.a
+moba_svg_LDADD = -lMoBaCommon $(GTKMM_LIBS) $(srcdir)/../modules/lib-tracklayout/src/moba/libtracklayout.a
 LDFLAGS += -L/usr/local/lib
 
-AM_CPPFLAGS = $(GTKMM_CFLAGS)
+AM_CPPFLAGS = $(GTKMM_CFLAGS) -I$(srcdir)/../modules/lib-tracklayout/src -g3 -ggdb -O3 -Wall
 
 CLEANFILES = *~
