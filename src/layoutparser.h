@@ -62,8 +62,33 @@ class LayoutParser {
      */
     std::list<Position> pointsOfInterest;
 
+    /**
+     * parst den Gleisplan bis zu einem Endgleis. Alle Positionen
+     * von gebogenen Gleisen weden in einem Vektor gespeichert. Bei einem Endgleis wird
+     * die Funktion beendet, bei einer Weiche wird beim komplimentären Punkt ganz normal
+     * weiter gemacht und die Position im Vector pointsOfInterest gespeichert.
+     *
+     * @param pos Aktuelle Position beim Parsen
+     * @param dir Richtung in die weiter geparst werden soll
+     */
     void collectTrackPoints(Position pos, Direction dir);
+
+    /**
+     * Hangelt sich am Gleisplan entlang bis kein gerades Gleis mehr gefunden wurde,
+     * Bzw. bis es kein Symbol mehr gibt, welches in die Richtung "dir" weiterführt
+     *
+     * @param pos Startposition
+     * @param dir Richtung in der gesucht werden soll
+     * @return Position des Symbols welches kein gerades Gleis mehr darstellt
+     */
     Position getNextBendPosition(Position pos, Direction dir);
+
+    /**
+     * Ermittelt einen definierten Startpunkt. Beginnt oben links und gibt Position
+     * des ersten Symbols zurück, welches entweder Weiche oder ein Endstück ist.
+     *
+     * @return
+     */
     Position getRealStartPosition();
 
 public:
@@ -74,6 +99,13 @@ public:
 
     }
 
+    /**
+     * Parst einen gesamten Gleisplan und liefert die Punkte von Weichen und gebogenen
+     * Gleisen zurück.
+     *
+     * @param layout zwei-dimensionales Array mit dem Gleisplan
+     * @return LineVector Enthält sämtliche Punkte mit Richtungsänderung für die SVG-Datei
+     */
     LineVector parse(LayoutContainer layout);
 };
 
