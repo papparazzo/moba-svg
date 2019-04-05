@@ -111,7 +111,7 @@ Position LayoutParser::getRealStartPosition() {
 LineVector LayoutParser::parse(LayoutContainer layout) {
 
     this->layout = layout;
-    this->lines = LineVector();
+    this->lines = LineVector{};
 
     // Startpunkt ermitteln
     pointsOfInterest.push_back(getRealStartPosition());
