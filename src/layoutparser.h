@@ -92,12 +92,7 @@ class LayoutParser {
     Position getRealStartPosition();
 
 public:
-    LayoutParser() {
-
-    }
-    virtual ~LayoutParser() {
-
-    }
+    virtual ~LayoutParser();
 
     /**
      * Parst einen gesamten Gleisplan und liefert die Punkte von Weichen und gebogenen

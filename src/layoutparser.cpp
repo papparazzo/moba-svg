@@ -108,6 +108,9 @@ Position LayoutParser::getRealStartPosition() {
     return pos;
 }
 
+LayoutParser::~LayoutParser() {
+}
+
 LineVector LayoutParser::parse(LayoutContainer layout) {
 
     this->layout = layout;
