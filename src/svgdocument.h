@@ -27,15 +27,17 @@
 
 class SvgDocument {
     public:
-        SvgDocument() {
-        }
+        SvgDocument(const std::string &fileName, size_t height, size_t width);
+        virtual ~SvgDocument();
 
-        void create(const std::string &fileName, LineVector &lines, size_t height, size_t width);
+        void addLayout(LineVector &lines);
+        void addText(size_t x, size_t y, const std::string &id, const std::string &text);
 
     protected:
         size_t getRealPosition(size_t pos, size_t offset = 0);
-        void createDocument(const std::string &title, LineVector &lines, size_t height, size_t width);
         void createPath(const std::vector<Position> &line);
+
+        size_t strokeWidth = 5;
 
         size_t factor = 25;
         std::ofstream out;

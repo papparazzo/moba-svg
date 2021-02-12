@@ -19,35 +19,20 @@
  */
 
 #include "svgdocument.h"
-
 #include <sstream>
 
-/**
-     <?xml version="1.0"?>
-
-<svg xmlns="http://www.w3.org/2000/svg" version="1.2" xml:lang="en">
-
-              <desc>Gleise</desc>
-
-              <path d="m30,30 h90 l100,100 v100" fill="white" stroke="rgb(100,100,100)" stroke-width="10" />
-
-              <polygon id="tri" points="20,35 31,35 31,25 30,25" fill="rgb(100,100,100)"/>
-
-
-
-  <!--
-
-  <path d="m80,0 h40 v80 h180 v40h-180 v80 h-40 v-80 h-80 v-40 h80z" style="stroke-width:1" />
-
-              <line x1="100" y1="100" x2="400" y2="100" style="stroke:rgb(100,100,100);stroke-width:9" />
-              <line x1="100" y1="100" x2="400" y2="100" stroke-dasharray="100,10" style="stroke:red;stroke-width:5" />
-        -->
-</svg>
- */
-
-void SvgDocument::create(const std::string &fileName, LineVector &lines, size_t height, size_t width) {
+SvgDocument::SvgDocument(const std::string &fileName, size_t height, size_t width) {
     out.open(fileName);
-    createDocument("auto-generated", lines, height, width);
+    out <<
+        "<?xml version=\"1.0\"?>\n" <<
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" xml:lang=\"en\" " << 
+        "viewBox=\"0 0 " << getRealPosition(width) << " " << getRealPosition(height) << "\" " <<
+        "width=\"100%\" height=\"100%\">\n" <<
+        "<title>auto-generated</title>\n";
+}
+
+SvgDocument::~SvgDocument() {
+    out << "</svg>";
     out.close();
 }
 
@@ -55,18 +40,16 @@ size_t SvgDocument::getRealPosition(size_t pos, size_t offset) {
     return (pos * factor) + (factor / 2) + offset;
 }
 
-void SvgDocument::createDocument(const std::string &title, LineVector &lines, size_t height, size_t width) {
-    out <<
-        "<?xml version=\"1.0\"?>\n" <<
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" xml:lang=\"en\" " <<
-        "width=\"" << getRealPosition(width) << "\" height=\"" << getRealPosition(height) << "\">\n" << // viewbox="0 0 3 2"
-            "<title>" << title << "</title>\n";
-
+void SvgDocument::addLayout(LineVector &lines) {
     for(auto line : lines) {
         createPath(line);
     }
+}
 
-    out << "</svg>";
+void SvgDocument::addText(size_t x, size_t y, const std::string &id, const std::string &text) {
+    out <<
+        "<text id=\"" << id << "\" x=\"" << getRealPosition(x, -4) << "\" y=\"" << getRealPosition(y, 4) << "\">" <<
+        "<tspan font-weight=\"bold\" fill=\"red\">" << text << "</tspan></text>";
 }
 
 void SvgDocument::createPath(const std::vector<Position> &line) {
@@ -83,8 +66,5 @@ void SvgDocument::createPath(const std::vector<Position> &line) {
         out << "L" << getRealPosition(pos.x) << "," << getRealPosition(pos.y)<< " ";
 
     }
-    out << "\" fill=\"white\" stroke=\"rgb(100,100,100)\" stroke-width=\"10\" />\n";
+    out << "\" fill=\"transparent\" stroke=\"rgb(100,100,100)\" stroke-width=\"" << strokeWidth << "\" />\n";
 }
-
-
-
