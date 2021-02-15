@@ -35,32 +35,34 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
         auto currSymbol = layout->get(pos);
 
         // Verbindugspunkt entfernen (verhindert eine Endlosschleife)
-        Direction compDir = getComplementaryDirection(dir);
-        currSymbol->removeJunktion(compDir);
+        Direction compDir = dir.getComplementaryDirection();
+
+        currSymbol->removeJunction(compDir);
 
         // Wie viele Verbindungspunkte sind noch offen?
-        switch(currSymbol->getOpenJunktionsCount()) {
+        switch(currSymbol->getOpenJunctionsCount()) {
             case 0: // Endgleis -> Funktion verlassen
                 posVector.push_back(pos);
-                lines.push_back(posVector);
+                lines.push_back(std::move(posVector));
                 return;
 
             case 1: {
-               auto openDir = currSymbol->getNextOpenJunktion();
-               switch(getDistanceType(openDir, compDir)) {
-                   // Teil einer Weiche (kann z.B. bei einer Kehrschleife passieren)
-                   case DistanceType::INVALID:
+                auto openDir = currSymbol->getNextOpenJunction();
+                switch(openDir.getDistanceType(compDir)) {
+                    // Teil einer Weiche (kann z.B. bei einer Kehrschleife passieren)
+                    case Direction::INVALID:
                         posVector.push_back(pos);
                         lines.push_back(std::move(posVector));
-                        currSymbol->removeJunktion(openDir);
+                        currSymbol->removeJunction(openDir);
                         collectTrackPoints(pos, openDir);
                         return;
 
-                   case DistanceType::BEND:
+                    case Direction::LEFT_BEND:
+                    case Direction::RIGHT_BEND:
                         posVector.push_back(pos);
                         dir = openDir;
-                   case DistanceType::STRAIGHT:
-                        currSymbol->removeJunktion(dir);
+                    case Direction::STRAIGHT:
+                        currSymbol->removeJunction(dir);
                         continue; // einfaches Gleis -> weitermachen
                 }
             }
@@ -68,23 +70,24 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
             case 2:
             case 3: {
                 if(currSymbol->isCrossOver() || currSymbol->isCrossOverSwitch()) {
-                    pointsOfInterest.push_back(getNextBendPosition(pos, currSymbol->getNextOpenJunktion()));
+                    pointsOfInterest.push_back(getNextBendPosition(pos, currSymbol->getNextOpenJunction()));
                 } else {
                     pointsOfInterest.push_back(pos);
                 }
                 if(currSymbol->isOpenJunctionSet(dir)) {
-                    currSymbol->removeJunktion(dir);
+                    currSymbol->removeJunction(dir);
                     continue; // einfaches Gleis -> weitermachen
                 }
                 posVector.push_back(pos);
-                auto ndir = getNextLeftDirection(dir);
-                if(currSymbol->isOpenJunctionSet(ndir)) {
-                    dir = ndir;
+
+                dir--;
+                if(currSymbol->isOpenJunctionSet(dir)) {
+                    currSymbol->removeJunction(dir);
                     continue;
                 }
-                ndir = getNextRightDirection(dir);
-                if(currSymbol->isOpenJunctionSet(ndir)) {
-                    dir = ndir;
+                dir += 2;
+                if(currSymbol->isOpenJunctionSet(dir)) {
+                    currSymbol->removeJunction(dir);
                     continue;
                 }
                 throw LayoutParserException("invalid");
@@ -97,12 +100,10 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
 }
 
 Position LayoutParser::getRealStartPosition() {
-    Position pos = layout->getNextBoundPosition({0, 0});
+    Position pos = layout->getNextBoundPosition();
 
-    auto currSymbol = layout->get(pos);
-
-    if(!currSymbol->isStartSymbol()) {
-        throw LayoutParserException("first symbol is not a start symbol");
+    if(!layout->get(pos)->isStartSymbol()) {
+        throw LayoutParserException{"first symbol is not a start symbol"};
     }
 
     return pos;
@@ -125,15 +126,15 @@ LineVector LayoutParser::parse(LayoutContainer layout) {
         auto pos = pointsOfInterest.front();
         auto currSymbol = layout->get(pos);
 
-        Direction dir = currSymbol->getNextOpenJunktion(Direction::TOP);
+        Direction dir = currSymbol->getNextOpenJunction(Direction::TOP);
 
         // Falls das Symobl keine offenen Verbindungspunkte mehr aufweist dann
         // das Element aus der Liste entfernen und mit dem nächsten Symbol fortfahren
-        if(dir == UNSET) {
+        if(dir == Direction::UNSET) {
             pointsOfInterest.pop_front();
             continue;
         }
-        currSymbol->removeJunktion(dir);
+        currSymbol->removeJunction(dir);
         collectTrackPoints(pos, dir);
         if(currSymbol->hasOpenJunctionsLeft()) {
             pointsOfInterest.push_back(pos);
