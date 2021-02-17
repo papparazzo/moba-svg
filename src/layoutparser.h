@@ -54,7 +54,7 @@ class LayoutParser {
 
     LineVector lines;
 
-    LayoutContainer layout;
+    LayoutContainerPtr layout;
 
     /**
      * Enthält sämtliche Weichen und Kreuzungen. Also Startpunkte von denen man aus
@@ -101,7 +101,7 @@ public:
      * @param layout zwei-dimensionales Array mit dem Gleisplan
      * @return LineVector Enthält sämtliche Punkte mit Richtungsänderung für die SVG-Datei
      */
-    LineVector parse(LayoutContainer layout);
+    LineVector parse(LayoutContainerPtr layout);
 };
 
 

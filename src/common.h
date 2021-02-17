@@ -26,9 +26,19 @@
 #include "moba/symbol.h"
 #include "moba/container.h"
 #include "moba/position.h"
+#include "moba/shared.h"
 
-using LayoutContainer = std::shared_ptr<Container<std::shared_ptr<Symbol>>>;
+// In
+struct LayoutSymbol {
+    LayoutSymbol(int id, Symbol symbol): id{id}, symbol{symbol} {
+    }
+	int id;
+	Symbol symbol;
+};
+
+using SymbolPtr = std::shared_ptr<LayoutSymbol>;
+using LayoutContainerPtr = std::shared_ptr<Container<SymbolPtr>>;
+using BlockContactDataPtr = std::shared_ptr<BlockContactData>;
+using BlockContactDataMapPtr = std::shared_ptr<std::map<Position, BlockContactDataPtr>>;
 
 using LineVector = std::vector<std::vector<Position>>;
-
-
