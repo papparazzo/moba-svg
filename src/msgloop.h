@@ -29,13 +29,6 @@
 #include <memory>
 #include "common.h"
 
-
-using SymbolPtr = std::shared_ptr<Symbol>;
-using LayoutContainerPtr = std::shared_ptr<Container<SymbolPtr>>;
-
-using BlockContactPtr = std::shared_ptr<BlockContactData>;
-using ContactMapPtr = std::shared_ptr<std::map<Position, BlockContactPtr>>;
-
 class MessageLoop : private boost::noncopyable {
 
     struct GetLayout : public LayoutMessage {
@@ -49,7 +42,7 @@ class MessageLoop : private boost::noncopyable {
                         static_cast<std::size_t>(iter["xPos"].GetInt()),
                         static_cast<std::size_t>(iter["yPos"].GetInt())
                     },
-                    std::make_shared<Symbol>(iter["symbol"].GetInt())
+                    std::make_shared<LayoutSymbol>(iter["id"].GetInt(), iter["symbol"].GetInt())
                 );
             }
         }
@@ -61,7 +54,7 @@ class MessageLoop : private boost::noncopyable {
         static constexpr std::uint32_t MESSAGE_ID = CONTROL_GET_CONTACT_LIST_RES;
 
         GetBlockingContacts(const rapidjson::Document &d) {
-            blockContacts = std::make_shared<std::map<Position, BlockContactPtr>>();
+            blockContacts = std::make_shared<std::map<Position, BlockContactDataPtr>>();
 
             for(auto &iter : d.GetArray()) {
                 (*blockContacts)[{
@@ -71,11 +64,11 @@ class MessageLoop : private boost::noncopyable {
             }
         }
 
-        ContactMapPtr blockContacts;
+        BlockContactDataMapPtr blockContacts;
     };
 
     EndpointPtr endpoint;
-    ContactMapPtr blockContacts;
+    BlockContactDataMapPtr blockContacts;
 
     void parseLayout(const GetLayout &d);
     void getFeedbackContactList(const GetBlockingContacts &d);
