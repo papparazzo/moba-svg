@@ -25,7 +25,7 @@ SvgDocument::SvgDocument(const std::string &fileName, size_t height, size_t widt
     out.open(fileName);
     out <<
         "<?xml version=\"1.0\"?>\n" <<
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" xml:lang=\"en\" " << 
+        "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.2\" xml:lang=\"en\" " <<
         "viewBox=\"0 0 " << getRealPosition(width) << " " << getRealPosition(height) << "\" " <<
         "width=\"100%\" height=\"100%\">\n" <<
         "<title>auto-generated</title>\n";
@@ -44,6 +44,15 @@ void SvgDocument::addLayout(LineVector &lines) {
     for(auto line : lines) {
         createPath(line);
     }
+}
+
+void SvgDocument::addSwitch(size_t x, size_t y, int id) {
+    out <<
+        "<g id=\"switch_" << id << "\">" <<
+//        "<path class=\"bend\" d="M125,87 L137,87 L149,75 \" fill=\"transparent\" stroke=\"white\" stroke-width=\"3\" />" <<
+//        "<line class="straight" x1="125" x2="150" y1="87" y2="87" fill="transparent" stroke="white" stroke-width="3"/>
+        "</g>";
+
 }
 
 void SvgDocument::addText(size_t x, size_t y, const std::string &id, const std::string &text) {

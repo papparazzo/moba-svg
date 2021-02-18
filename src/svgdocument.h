@@ -32,6 +32,7 @@ class SvgDocument {
 
         void addLayout(LineVector &lines);
         void addText(size_t x, size_t y, const std::string &id, const std::string &text);
+        void addSwitch(size_t x, size_t y, int id);
 
     protected:
         size_t getRealPosition(size_t pos, size_t offset = 0);
