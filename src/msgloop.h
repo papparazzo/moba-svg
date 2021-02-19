@@ -67,11 +67,29 @@ class MessageLoop : private boost::noncopyable {
         BlockContactDataMapPtr blockContacts;
     };
 
+    struct GetSwitchStates : public ControlMessage {
+        static constexpr std::uint32_t MESSAGE_ID = CONTROL_GET_SWITCH_STAND_LIST_RES;
+        GetSwitchStates(const rapidjson::Document &d) {
+            switchstates = std::make_shared<std::map<Position, SwitchStandData>>();
+
+            for(auto &iter : d.GetArray()) {
+                (*switchstates)[{
+                    static_cast<std::size_t>(iter["xPos"].GetInt()),
+                    static_cast<std::size_t>(iter["yPos"].GetInt())
+                }] = SwitchStandData{iter};
+            }
+        }
+
+        SwitchStandMapPtr switchstates;
+    };
+
     EndpointPtr endpoint;
     BlockContactDataMapPtr blockContacts;
-
+    SwitchStandMapPtr switchstates;
+    
     void parseLayout(const GetLayout &d);
     void getFeedbackContactList(const GetBlockingContacts &d);
+    void getSwitchStates(const GetSwitchStates &d);
 
     bool closing;
 

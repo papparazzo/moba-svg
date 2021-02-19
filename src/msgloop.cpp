@@ -36,6 +36,7 @@ void MessageLoop::run() {
             Registry registry;
             registry.registerHandler<GetLayout>([this](const GetLayout &d){parseLayout(d);});
             registry.registerHandler<GetBlockingContacts>([this](const GetBlockingContacts &d){getFeedbackContactList(d);});
+            registry.registerHandler<GetSwitchStates>([this](const GetSwitchStates &d) {getSwitchStates(d);});
 
             endpoint->connect();
             endpoint->sendMsg(ControlGetContactListReq{});
@@ -52,6 +53,11 @@ void MessageLoop::run() {
 
 void MessageLoop::getFeedbackContactList(const GetBlockingContacts &d) {
     blockContacts = d.blockContacts;
+    endpoint->sendMsg(ControlGetSwitchStateListReq{});
+}
+
+void MessageLoop::getSwitchStates(const GetSwitchStates &d) {
+    switchstates = d.switchstates;
     endpoint->sendMsg(LayoutGetLayoutReadOnlyReq{});
 }
 
@@ -63,5 +69,9 @@ void MessageLoop::parseLayout(const MessageLoop::GetLayout &d) {
 
     for(auto &iter : *blockContacts) {
         svg.addText(iter.first.x, iter.first.y, "b" + std::to_string(iter.second->id), "AA");
+    }
+
+    for(auto &iter : *switchstates) {
+        svg.addSwitch();
     }
 }

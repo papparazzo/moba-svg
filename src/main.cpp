@@ -18,30 +18,45 @@
  *
  */
 
+#include <iostream>
+#include <functional>
 #include <memory>
+#include <thread>
 
+#include <moba-common/helper.h>
+#include <moba-common/log.h>
+
+#include "config.h"
+
+#include "moba/socket.h"
+#include "moba/endpoint.h"
+#include "moba/layoutmessages.h"
+#include "moba/controlmessages.h"
 #include "moba/container.h"
 #include "moba/symbol.h"
-#include "layoutparser.h"
 #include "common.h"
-#include "svgdocument.h"
+#include "msgloop.h"
+#include <unistd.h>
 
-#include <iostream>
+namespace {
+    moba::common::AppData appData = {
+        PACKAGE_NAME,
+        moba::common::Version(PACKAGE_VERSION),
+        __DATE__,
+        __TIME__,
+        "::1",
+        7000
+    };
+}
 
-int main(int argc, char** argv) {
-    std::shared_ptr<Container<std::shared_ptr<Symbol>>> layout{new Container<std::shared_ptr<Symbol>>{20, 20}} ;
+int main(int argc, char *argv[]) {
+    moba::common::setCoreFileSizeToULimit();
 
-    layout->addItem({10, 10}, std::shared_ptr<Symbol>{new Symbol(Direction::RIGHT)});
-    layout->addItem({11, 10}, std::shared_ptr<Symbol>{new Symbol(Direction::RIGHT | Direction::LEFT)});
-    layout->addItem({12, 10}, std::shared_ptr<Symbol>{new Symbol(Direction::RIGHT | Direction::LEFT | Direction::TOP | Direction::BOTTOM)});
-    layout->addItem({13, 10}, std::shared_ptr<Symbol>{new Symbol(Direction::LEFT)});
+    auto socket = std::make_shared<Socket>(appData.host, appData.port);
+    auto endpoint = EndpointPtr{new Endpoint{socket, appData.appName, appData.version, {Message::CLIENT, Message::LAYOUT}}};
 
-    layout->addItem({12, 9}, std::shared_ptr<Symbol>{new Symbol(Direction::BOTTOM)});
-    layout->addItem({12, 11}, std::shared_ptr<Symbol>{new Symbol(Direction::TOP)});
-    LayoutParser parser;
-    LineVector lines = parser.parse(layout);
-    SvgDocument svg;
-    svg.create("/home/stefan/Desktop/test.svg", lines, layout->getHeight(), layout->getWidth());
+    MessageLoop loop(endpoint);
+    loop.run();
 
     return 0;
 }

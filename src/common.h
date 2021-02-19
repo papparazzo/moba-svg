@@ -40,5 +40,6 @@ using SymbolPtr = std::shared_ptr<LayoutSymbol>;
 using LayoutContainerPtr = std::shared_ptr<Container<SymbolPtr>>;
 using BlockContactDataPtr = std::shared_ptr<BlockContactData>;
 using BlockContactDataMapPtr = std::shared_ptr<std::map<Position, BlockContactDataPtr>>;
+using SwitchStandMapPtr = std::shared_ptr<std::map<Position, SwitchStandData>>;
 
 using LineVector = std::vector<std::vector<Position>>;
