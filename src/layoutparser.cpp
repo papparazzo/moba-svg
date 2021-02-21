@@ -34,6 +34,10 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
         pos.setNewPosition(dir);
         auto currSymbol = layout->get(pos);
 
+        if(currSymbol->symbol.isSwitch() && switches->find(pos) == switches->end()) {
+            (*switches)[pos] = *currSymbol;
+        }
+
         // Verbindugspunkt entfernen (verhindert eine Endlosschleife)
         Direction compDir = dir.getComplementaryDirection();
 
@@ -43,7 +47,7 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
         switch(currSymbol->symbol.getOpenJunctionsCount()) {
             case 0: // Endgleis -> Funktion verlassen
                 posVector.push_back(pos);
-                lines.push_back(std::move(posVector));
+                lines->push_back(std::move(posVector));
                 return;
 
             case 1: {
@@ -52,7 +56,7 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
                     // Teil einer Weiche (kann z.B. bei einer Kehrschleife passieren)
                     case Direction::INVALID:
                         posVector.push_back(pos);
-                        lines.push_back(std::move(posVector));
+                        lines->push_back(std::move(posVector));
                         currSymbol->symbol.removeJunction(openDir);
                         collectTrackPoints(pos, openDir);
                         return;
@@ -112,10 +116,11 @@ Position LayoutParser::getRealStartPosition() {
 LayoutParser::~LayoutParser() {
 }
 
-LineVector LayoutParser::parse(LayoutContainerPtr layout) {
+void LayoutParser::parse(LayoutContainerPtr layout) {
 
     this->layout = layout;
-    this->lines = LineVector{};
+    lines = std::make_shared<LineVector>();
+    switches = std::make_shared<SwitchMap>();
 
     // Startpunkt ermitteln
     pointsOfInterest.push_back(getRealStartPosition());
@@ -141,7 +146,6 @@ LineVector LayoutParser::parse(LayoutContainerPtr layout) {
         }
         pointsOfInterest.pop_front();
     }
-    return std::move(this->lines);
 }
 
 Position LayoutParser::getNextBendPosition(Position pos, Direction dir) {
@@ -154,3 +158,10 @@ Position LayoutParser::getNextBendPosition(Position pos, Direction dir) {
     return pos;
 }
 
+LineVectorPtr LayoutParser::getLineVector() {
+    return lines;
+}
+
+SwitchMapPtr LayoutParser::getSwitchMap() {
+    return switches;
+}

@@ -52,9 +52,11 @@ class LayoutParserException : public std::exception {
 
 class LayoutParser {
 
-    LineVector lines;
+    LineVectorPtr lines;
 
     LayoutContainerPtr layout;
+
+    SwitchMapPtr switches;
 
     /**
      * Enthält sämtliche Weichen und Kreuzungen. Also Startpunkte von denen man aus
@@ -101,7 +103,11 @@ public:
      * @param layout zwei-dimensionales Array mit dem Gleisplan
      * @return LineVector Enthält sämtliche Punkte mit Richtungsänderung für die SVG-Datei
      */
-    LineVector parse(LayoutContainerPtr layout);
+    void parse(LayoutContainerPtr layout);
+
+    LineVectorPtr getLineVector();
+
+    SwitchMapPtr getSwitchMap();
 };
 
 
