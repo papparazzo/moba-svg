@@ -30,6 +30,9 @@
 
 // In
 struct LayoutSymbol {
+    LayoutSymbol() {
+    }
+
     LayoutSymbol(int id, Symbol symbol): id{id}, symbol{symbol} {
     }
 	int id;
@@ -43,3 +46,6 @@ using BlockContactDataMapPtr = std::shared_ptr<std::map<Position, BlockContactDa
 using SwitchStandMapPtr = std::shared_ptr<std::map<Position, SwitchStandData>>;
 
 using LineVector = std::vector<std::vector<Position>>;
+using LineVectorPtr = std::shared_ptr<LineVector>;
+using SwitchMap = std::map<Position, LayoutSymbol>;
+using SwitchMapPtr = std::shared_ptr<SwitchMap>;
