@@ -86,7 +86,7 @@ class MessageLoop : private boost::noncopyable {
     EndpointPtr endpoint;
     BlockContactDataMapPtr blockContacts;
     SwitchStandMapPtr switchstates;
-    
+
     void parseLayout(const GetLayout &d);
     void getFeedbackContactList(const GetBlockingContacts &d);
     void getSwitchStates(const GetSwitchStates &d);

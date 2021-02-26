@@ -30,17 +30,26 @@ class SvgDocument {
         SvgDocument(const std::string &fileName, size_t height, size_t width);
         virtual ~SvgDocument();
 
-        void addLayout(LineVector &lines);
+        void addLayout(LineVectorPtr lines);
         void addText(size_t x, size_t y, const std::string &id, const std::string &text);
-        void addSwitch(size_t x, size_t y, int id);
+
+        void addCrossOverSwitch(size_t x, size_t y, std::uint8_t offset, int id);
+        void addRightSwitch(size_t x, size_t y, std::uint8_t offset, int id);
+        void addLeftSwitch(size_t x, size_t y, std::uint8_t offset, int id);
+        void addThreeWaySwitch(size_t x, size_t y, std::uint8_t offset, int id);
 
     protected:
         size_t getRealPosition(size_t pos, size_t offset = 0);
         void createPath(const std::vector<Position> &line);
+        void addSwitch(size_t x, size_t y, std::uint8_t offset, int id, bool right);
 
-        size_t strokeWidth = 5;
-
-        size_t factor = 25;
         std::ofstream out;
+
+        static const size_t STROKE_WIDTH_OUTER = 6;
+        static const size_t STROKE_WIDTH_INNER = 4;
+
+        static const size_t FACTOR = 26;
+
+        static const size_t MIDDLE = FACTOR / 2;
 };
 

@@ -37,28 +37,53 @@ SvgDocument::~SvgDocument() {
 }
 
 size_t SvgDocument::getRealPosition(size_t pos, size_t offset) {
-    return (pos * factor) + (factor / 2) + offset;
+    return (pos * FACTOR) + MIDDLE + offset;
 }
 
-void SvgDocument::addLayout(LineVector &lines) {
-    for(auto line : lines) {
+void SvgDocument::addLayout(LineVectorPtr lines) {
+    for(auto line : *lines) {
         createPath(line);
     }
 }
 
-void SvgDocument::addSwitch(size_t x, size_t y, int id) {
+void SvgDocument::addSwitch(size_t x, size_t y, std::uint8_t offset, int id, bool right) {
+    out <<
+        "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"red\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
+        "transform=\"translate(" << FACTOR * x << "," << FACTOR * y << ") rotate(" << 45 * offset << ", 13, 13)\">\n" <<
+        "    <path class=\"bend\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << (right ? FACTOR : 0) << ",0\" />\n" <<
+        "    <line class=\"straight\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
+        "</g>\n";
+}
+
+void SvgDocument::addCrossOverSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
     out <<
         "<g id=\"switch_" << id << "\">" <<
-//        "<path class=\"bend\" d="M125,87 L137,87 L149,75 \" fill=\"transparent\" stroke=\"white\" stroke-width=\"3\" />" <<
-//        "<line class="straight" x1="125" x2="150" y1="87" y2="87" fill="transparent" stroke="white" stroke-width="3"/>
-        "</g>";
+//        "<path class=\"bend\" d="M125,87 L137,87 L149,75 \" fill=\"transparent\" stroke=\"white\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" />" <<
+        "</g>\n";
+}
 
+void SvgDocument::addRightSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
+    addSwitch(x, y, offset, id, true);
+}
+
+void SvgDocument::addLeftSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
+    addSwitch(x, y, offset, id, false);
+}
+
+void SvgDocument::addThreeWaySwitch(size_t x, size_t y, std::uint8_t offset, int id) {
+    out <<
+        "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"red\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
+        "transform=\"translate(" << FACTOR * x << "," << FACTOR * y << ") rotate(" << 45 * offset << ", 13, 13)\">\n" <<
+        "    <path class=\"bend\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << FACTOR << ",0\" />\n" <<
+        "    <path class=\"bend\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L0,0\" />\n" <<
+        "    <line class=\"straight\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
+        "</g>\n";
 }
 
 void SvgDocument::addText(size_t x, size_t y, const std::string &id, const std::string &text) {
     out <<
         "<text id=\"" << id << "\" x=\"" << getRealPosition(x, -4) << "\" y=\"" << getRealPosition(y, 4) << "\">" <<
-        "<tspan font-weight=\"bold\" fill=\"red\">" << text << "</tspan></text>";
+        "<tspan font-weight=\"bold\" fill=\"red\">" << text << "</tspan></text>\n";
 }
 
 void SvgDocument::createPath(const std::vector<Position> &line) {
@@ -75,5 +100,5 @@ void SvgDocument::createPath(const std::vector<Position> &line) {
         out << "L" << getRealPosition(pos.x) << "," << getRealPosition(pos.y)<< " ";
 
     }
-    out << "\" fill=\"transparent\" stroke=\"rgb(100,100,100)\" stroke-width=\"" << strokeWidth << "\" />\n";
+    out << "\" fill=\"transparent\" stroke=\"rgb(100,100,100)\" stroke-width=\"" << STROKE_WIDTH_OUTER << "\" />\n";
 }
