@@ -47,19 +47,29 @@ void SvgDocument::addLayout(LineVectorPtr lines) {
 }
 
 void SvgDocument::addSwitch(size_t x, size_t y, std::uint8_t offset, int id, bool right) {
-    out <<
-        "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"red\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
-        "transform=\"translate(" << FACTOR * x << "," << FACTOR * y << ") rotate(" << 45 * offset << ", 13, 13)\">\n" <<
-        "    <path class=\"bend\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << (right ? FACTOR : 0) << ",0\" />\n" <<
-        "    <line class=\"straight\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
-        "</g>\n";
+    if(offset % 2) {
+        auto rotate = 45 * (offset + 1);
+        out <<
+            "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"yellow\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
+            "transform=\"translate(" << FACTOR * x << "," << FACTOR * y << ") rotate(" << rotate << ", 13, 13)\">\n" <<
+            "    <path class=\"bend1\" d=\"M" << FACTOR << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << MIDDLE << "," << (right ? 0 : FACTOR) << "\" />\n" <<
+            "    <line class=\"straight1\" x1=\"0\" x2=\"" << FACTOR << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
+            "</g>\n";
+    } else {
+        auto rotate = 45 * offset;
+        out <<
+            "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"yellow\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
+            "transform=\"translate(" << FACTOR * x << "," << FACTOR * y << ") rotate(" << rotate << ", 13, 13)\">\n" <<
+            "    <path class=\"bend1\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << (right ? FACTOR : 0) << ",0\" />\n" <<
+            "    <line class=\"straight1\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
+            "</g>\n";
+    }
 }
 
 void SvgDocument::addCrossOverSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
-    out <<
-        "<g id=\"switch_" << id << "\">" <<
-//        "<path class=\"bend\" d="M125,87 L137,87 L149,75 \" fill=\"transparent\" stroke=\"white\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" />" <<
-        "</g>\n";
+
+
+
 }
 
 void SvgDocument::addRightSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
@@ -72,11 +82,12 @@ void SvgDocument::addLeftSwitch(size_t x, size_t y, std::uint8_t offset, int id)
 
 void SvgDocument::addThreeWaySwitch(size_t x, size_t y, std::uint8_t offset, int id) {
     out <<
-        "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"red\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
+        "<g id=\"switch_" << id << "\" fill=\"transparent\" stroke=\"yellow\" stroke-width=\"" << STROKE_WIDTH_INNER << "\" " <<
         "transform=\"translate(" << FACTOR * x << "," << FACTOR * y << ") rotate(" << 45 * offset << ", 13, 13)\">\n" <<
-        "    <path class=\"bend\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << FACTOR << ",0\" />\n" <<
-        "    <path class=\"bend\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L0,0\" />\n" <<
-        "    <line class=\"straight\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
+        "    <path class=\"bend1\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L" << FACTOR << ",0\" />\n" <<
+        "    <path class=\"bend2\" d=\"M" << MIDDLE << "," << FACTOR << " L" << MIDDLE << "," << MIDDLE << " L0,0\" />\n" <<
+        "    <line class=\"straight1\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
+        "    <line class=\"straight2\" x1=\"" << MIDDLE << "\" x2=\"" << MIDDLE << "\" y1=\"0\" y2=\"" << FACTOR << "\" />\n" <<
         "</g>\n";
 }
 
