@@ -7,7 +7,7 @@ AC_CONFIG_SUBDIRS([modules/lib-msghandling])
 AC_CONFIG_SUBDIRS([modules/lib-tracklayout])
 AC_CONFIG_AUX_DIR([.])
 
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([-Wall foreign])
 
 # Checks for programs.
 AC_PROG_CXX
