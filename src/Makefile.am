@@ -10,7 +10,8 @@ moba_svg_SOURCES = \
 
 
 moba_svg_LDADD = \
-    -lmobacommon $(GTKMM_LIBS) \
+    -lmobacommon \
+    $(GTKMM_LIBS) \
     $(srcdir)/../modules/lib-msghandling/src/moba/libmsghandling.a \
     $(srcdir)/../modules/lib-tracklayout/src/moba/libtracklayout.a
 
