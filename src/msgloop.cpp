@@ -20,7 +20,6 @@
 
 #include <thread>
 #include <string>
-#include <moba-common/log.h>
 
 #include "msgloop.h"
 #include "moba/registry.h"
@@ -46,7 +45,7 @@ void MessageLoop::run() {
                 registry.handleMsg(endpoint->waitForNewMsg());
             }
         } catch(const std::exception &e) {
-            LOG(moba::common::LogLevel::ERROR) << "exception occured! <" << e.what() << ">" << std::endl;
+            std::cerr << "exception occured! <" << e.what() << ">" << std::endl;
         }
         std::this_thread::sleep_for(std::chrono::milliseconds{500});
     }
@@ -87,6 +86,5 @@ void MessageLoop::parseLayout(const MessageLoop::GetLayout &d) {
         } else if(sym.isThreeWaySwitch()) {
 //            svg.addThreeWaySwitch(pos.x, pos.y, sym.getDistance(Symbol::THREE_WAY_SWITCH), id);
         }
-
     }
 }
