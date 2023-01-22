@@ -29,14 +29,14 @@
 #include <memory>
 #include "common.h"
 
-class MessageLoop : private boost::noncopyable {
+class MessageLoop: private boost::noncopyable {
 
-    struct GetLayout : public LayoutMessage {
+    struct GetLayout: public LayoutMessage {
         static constexpr std::uint32_t MESSAGE_ID = LAYOUT_GET_LAYOUT_RES;
 
         GetLayout(const rapidjson::Document &d) {
             symbols = std::make_shared<Container<SymbolPtr>>();
-            for(auto &iter : d["symbols"].GetArray()) {
+            for(auto &iter: d["symbols"].GetArray()) {
                 symbols->addItem(
                     {
                         static_cast<std::size_t>(iter["xPos"].GetInt()),
@@ -50,7 +50,7 @@ class MessageLoop : private boost::noncopyable {
         LayoutContainerPtr symbols;
     };
 
-    struct GetBlockingContacts : public ControlMessage {
+    struct GetBlockingContacts: public ControlMessage {
         static constexpr std::uint32_t MESSAGE_ID = CONTROL_GET_CONTACT_LIST_RES;
 
         GetBlockingContacts(const rapidjson::Document &d) {
@@ -67,7 +67,7 @@ class MessageLoop : private boost::noncopyable {
         BlockContactDataMapPtr blockContacts;
     };
 
-    struct GetSwitchStates : public ControlMessage {
+    struct GetSwitchStates: public ControlMessage {
         static constexpr std::uint32_t MESSAGE_ID = CONTROL_GET_SWITCH_STAND_LIST_RES;
         GetSwitchStates(const rapidjson::Document &d) {
             switchstates = std::make_shared<std::map<Position, SwitchStandData>>();

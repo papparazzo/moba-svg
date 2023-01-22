@@ -34,8 +34,8 @@ void MessageLoop::run() {
     while(!closing) {
         try {
             Registry registry;
-            registry.registerHandler<GetLayout>([this](const GetLayout &d){parseLayout(d);});
-            registry.registerHandler<GetBlockingContacts>([this](const GetBlockingContacts &d){getFeedbackContactList(d);});
+            registry.registerHandler<GetLayout>([this](const GetLayout &d) {parseLayout(d);});
+            registry.registerHandler<GetBlockingContacts>([this](const GetBlockingContacts &d) {getFeedbackContactList(d);});
             registry.registerHandler<GetSwitchStates>([this](const GetSwitchStates &d) {getSwitchStates(d);});
 
             endpoint->connect();

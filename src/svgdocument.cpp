@@ -68,8 +68,6 @@ void SvgDocument::addSwitch(size_t x, size_t y, std::uint8_t offset, int id, boo
 
 void SvgDocument::addCrossOverSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
 
-
-
 }
 
 void SvgDocument::addRightSwitch(size_t x, size_t y, std::uint8_t offset, int id) {
