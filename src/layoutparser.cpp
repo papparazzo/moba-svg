@@ -94,11 +94,11 @@ void LayoutParser::collectTrackPoints(Position pos, Direction dir) {
                     currSymbol->symbol.removeJunction(dir);
                     continue;
                 }
-                throw LayoutParserException("invalid");
+                throw LayoutParserException{"invalid"};
             }
 
             default:
-                throw LayoutParserException("invalid case");
+                throw LayoutParserException{"invalid case"};
         }
     }
 }
