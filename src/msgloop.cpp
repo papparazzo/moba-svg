@@ -69,7 +69,7 @@ void MessageLoop::parseLayout(const MessageLoop::GetLayout &d) {
     svg.addLayout(parser.getLineVector());
 
     for(auto &iter : *blockContacts) {
-        svg.addText(iter.first.x, iter.first.y, "b" + std::to_string(iter.second->id), "AA");
+        svg.addText(iter.first.x, iter.first.y, "b" + std::to_string(iter.second->id), "");
     }
 
     for(auto &iter : *(parser.getSwitchMap())) {
