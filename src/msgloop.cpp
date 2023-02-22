@@ -27,7 +27,8 @@
 #include "svgdocument.h"
 #include "moba/symbol.h"
 
-MessageLoop::MessageLoop(EndpointPtr endpoint) : endpoint{endpoint}, closing{false} {
+MessageLoop::MessageLoop(EndpointPtr endpoint, const std::string &fileName):
+endpoint{endpoint}, fileName{fileName}, closing{false} {
 }
 
 void MessageLoop::run() {
@@ -39,9 +40,9 @@ void MessageLoop::run() {
             registry.registerHandler<GetSwitchStates>([this](const GetSwitchStates &d) {getSwitchStates(d);});
 
             endpoint->connect();
-            endpoint->sendMsg(ControlGetContactListReq{});
+            endpoint->sendMsg(ControlGetBlockListReq{});
 
-            while(true) {
+            while(!closing) {
                 registry.handleMsg(endpoint->waitForNewMsg());
             }
         } catch(const std::exception &e) {
@@ -65,7 +66,7 @@ void MessageLoop::parseLayout(const MessageLoop::GetLayout &d) {
     LayoutParser parser;
     parser.parse(d.symbols);
 
-    SvgDocument svg{"/home/stefan/Documents/moba/quellcode/moba-display/src/www-data/img/test.svg", d.symbols->getHeight() + 2, d.symbols->getWidth() + 2};
+    SvgDocument svg{fileName, d.symbols->getHeight() + 2, d.symbols->getWidth() + 2};
     svg.addLayout(parser.getLineVector());
 
     for(auto &iter : *blockContacts) {
@@ -87,4 +88,5 @@ void MessageLoop::parseLayout(const MessageLoop::GetLayout &d) {
 //            svg.addThreeWaySwitch(pos.x, pos.y, sym.getDistance(Symbol::THREE_WAY_SWITCH), id);
         }
     }
+    closing = true;
 }

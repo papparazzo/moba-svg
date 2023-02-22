@@ -51,7 +51,7 @@ class MessageLoop: private boost::noncopyable {
     };
 
     struct GetBlockingContacts: public ControlMessage {
-        static constexpr std::uint32_t MESSAGE_ID = CONTROL_GET_CONTACT_LIST_RES;
+        static constexpr std::uint32_t MESSAGE_ID = CONTROL_GET_BLOCK_LIST_RES;
 
         GetBlockingContacts(const rapidjson::Document &d) {
             blockContacts = std::make_shared<std::map<Position, BlockContactDataPtr>>();
@@ -91,9 +91,10 @@ class MessageLoop: private boost::noncopyable {
     void getFeedbackContactList(const GetBlockingContacts &d);
     void getSwitchStates(const GetSwitchStates &d);
 
+    std::string fileName;
     bool closing;
 
 public:
-    MessageLoop(EndpointPtr endpoint);
+    MessageLoop(EndpointPtr endpoint, const std::string &fileName);
     void run();
 };

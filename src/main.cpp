@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
     auto socket = std::make_shared<Socket>(appData.host, appData.port);
     auto endpoint = EndpointPtr{new Endpoint{socket, appData.appName, appData.version, {Message::CLIENT, Message::LAYOUT}}};
 
-    MessageLoop loop(endpoint);
+    MessageLoop loop(endpoint, "/home/stefan/Documents/moba/quellcode/moba-display/src/www-data/img/test.svg");
     loop.run();
 
     return 0;
