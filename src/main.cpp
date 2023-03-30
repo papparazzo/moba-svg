@@ -51,10 +51,13 @@ namespace {
 
 int main(int argc, char *argv[]) {
 
+    std::string fileName =
+        "/home/stefan/Documents/moba/quellcode/moba-display/src/www-data/img/test.svg";
+
     auto socket = std::make_shared<Socket>(appData.host, appData.port);
     auto endpoint = EndpointPtr{new Endpoint{socket, appData.appName, appData.version, {Message::CLIENT, Message::LAYOUT}}};
 
-    MessageLoop loop(endpoint, "/home/stefan/Documents/moba/quellcode/moba-display/src/www-data/img/test.svg");
+    MessageLoop loop(endpoint, fileName);
     loop.run();
 
     return 0;
